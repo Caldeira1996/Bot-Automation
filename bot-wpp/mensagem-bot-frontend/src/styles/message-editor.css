@@ -1,0 +1,21 @@
+/* message-editor.css */
+.message-editor {
+  margin-top: 2rem;
+}
+
+.message-editor textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+}
+
+textarea.input {
+  min-height: 200px;
+  resize: vertical;
+}
+
+button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  color: #ccc;
+}

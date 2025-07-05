@@ -1,0 +1,20 @@
+.modal p {
+  margin-bottom: 1rem;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.button-group {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+#confirm-yes {
+    background: red;
+}
+
+#confirm-yes:hover {
+    transform: scale(1.1);
+}

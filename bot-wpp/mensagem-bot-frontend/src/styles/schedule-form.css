@@ -1,0 +1,14 @@
+/* schedule-form.css */
+.schedule-form {
+  margin-top: 2rem;
+}
+
+.schedule-form input,
+.schedule-form button {
+  margin-top: 0.5rem;
+}
+
+#btn-schedule-shipments {
+  font-size: 18px;
+  size: 18px;
+}
