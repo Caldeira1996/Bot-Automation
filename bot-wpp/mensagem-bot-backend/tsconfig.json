@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    /* Linguagem e ambiente */
+    "target": "es2016",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "rootDir": "src",
+    "outDir": "dist",
+
+    /* Compatibilidade entre CommonJS e ESModules */
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+
+    /* Checagem de tipos */
+    "strict": true,
+    "skipLibCheck": true
+  },
+  "include": ["src"]
+}
