@@ -1,162 +1,173 @@
-import { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSenderNumber } from "../components/SenderNumberContext";
-import "../styles/settings.css";
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useSenderNumber } from '../components/SenderNumberContext';
+import '../styles/settings.css';
+
+/* ---------- util ---------- */
+type SessionStatus = 'DISCONNECTED' | 'QRCODE_GENERATED' | 'CONNECTED';
+
+async function fetchStatus(): Promise<{
+  status: SessionStatus;
+  hasQR: boolean;
+  qr?: string;
+}> {
+  try {
+    const r = await fetch('http://localhost:3333/status');
+    const j = await r.json();
+    return { status: j.status, hasQR: j.hasQR, qr: j.qr };
+  } catch {
+    return { status: 'DISCONNECTED', hasQR: false };
+  }
+}
 
 export default function Settings() {
+  /* estados básicos */
   const { senderNumber, setSenderNumber } = useSenderNumber();
   const [value, setValue] = useState(senderNumber);
   const navigate = useNavigate();
 
-  // Estado para QR code base64
+  /* integração */
   const [qrCode, setQrCode] = useState<string | null>(null);
-  // Estado para mostrar status da integração
   const [loading, setLoading] = useState(false);
-  // Estado para controlar se modal está aberto
   const [showModal, setShowModal] = useState(false);
+  const [connected, setConnected] = useState(false);
 
-  // Guarda o ID do intervalo para limpar depois
-  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
 
+  /* salvar número */
   const handleSave = () => {
     if (!/^\d{12,13}$/.test(value)) {
-      alert("Digite no formato 55DDDNUMERO (apenas dígitos).");
+      alert('Digite no formato 55DDDNUMERO.');
       return;
     }
     setSenderNumber(value);
-    alert("Número salvo!");
+    alert('Número salvo!');
     navigate(-1);
   };
 
+  /* iniciar integração */
   const startIntegration = async () => {
-    console.log("🚀 Iniciando integração...");
+    /* 1) verifica status atual */
+    const s = await fetchStatus();
+
+    if (s.status === 'CONNECTED') {
+      alert('WhatsApp já conectado!');
+      setConnected(true);
+      return;
+    }
+
+    if (s.status === 'QRCODE_GENERATED' && s.hasQR && s.qr) {
+      // reaproveita QR já existente
+      setQrCode(s.qr);
+      setShowModal(true);
+      return;
+    }
+
+    /* 2) chama /start para gerar QR */
     setLoading(true);
     setQrCode(null);
 
     try {
-      const response = await fetch("http://localhost:3333/start", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const resp = await fetch('http://localhost:3333/start', { method: 'POST' });
+      const startJson = await resp.json();
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      // se o backend já devolveu QR (caso token inválido)
+      if (startJson.qr) {
+        setQrCode(startJson.qr);
+        setShowModal(true);
       }
 
-      const result = await response.json();
-      console.log("✅ Start response:", result);
+      /* 3) inicia polling */
+      let tries = 0;
+      const max = 30;
 
-      // Limpa se já tiver um intervalo rodando
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-      }
+      async function tick() {
+        tries += 1;
+        const st = await fetchStatus();
 
-      let attempts = 0;
-      const maxAttempts = 30; // 60 segundos total
-
-      // Fazer polling a cada 2s para pegar o QR
-      pollingIntervalRef.current = setInterval(async () => {
-        attempts++;
-        console.log(`🔄 Tentativa ${attempts}/${maxAttempts} - Buscando QR...`);
-
-        try {
-          const res = await fetch("http://localhost:3333/qr");
-
-          if (res.ok) {
-            const data = await res.json();
-            console.log("📱 QR Response:", { hasQR: !!data.qr, status: data.status });
-
-            if (data.qr) {
-              console.log("✅ QR Code recebido!");
-              setQrCode(data.qr);
-              setLoading(false);
-              setShowModal(true); // Abre modal quando QR disponível
-              if (pollingIntervalRef.current) {
-                clearInterval(pollingIntervalRef.current);
-                pollingIntervalRef.current = null;
-              }
-            }
-          } else {
-            console.log("⚠️ QR não disponível ainda...");
-          }
-
-          if (attempts >= maxAttempts) {
-            console.log("⏰ Timeout - Máximo de tentativas atingido");
-            setLoading(false);
-            alert("Timeout: QR Code não foi gerado a tempo. Tente novamente.");
-            if (pollingIntervalRef.current) {
-              clearInterval(pollingIntervalRef.current);
-              pollingIntervalRef.current = null;
-            }
-          }
-        } catch (error) {
-          console.error("❌ Erro ao buscar QR code:", error);
-
-          if (attempts >= maxAttempts) {
-            setLoading(false);
-            if (pollingIntervalRef.current) {
-              clearInterval(pollingIntervalRef.current);
-              pollingIntervalRef.current = null;
-            }
-          }
+        if (st.status === 'CONNECTED') {
+          setConnected(true);
+          stop();
+          return;
         }
-      }, 2000);
-    } catch (error) {
-      console.error("❌ Erro ao iniciar integração:", error);
-      alert("Erro ao iniciar integração: " + error);
+
+        if (st.status === 'QRCODE_GENERATED' && st.hasQR && st.qr) {
+          setQrCode(st.qr);
+          if (!showModal) setShowModal(true);
+        }
+
+        if (tries >= max) {
+          alert('Timeout: QR não gerado ou sessão não conectou.');
+          stop();
+        }
+      }
+
+      function stop() {
+        if (pollingRef.current) clearInterval(pollingRef.current);
+        pollingRef.current = null;
+        setLoading(false);
+      }
+
+      pollingRef.current = setInterval(tick, 2000);
+      tick();
+    } catch (err) {
+      console.error(err);
+      alert('Erro ao iniciar integração');
       setLoading(false);
     }
   };
 
-  // Cleanup do intervalo ao desmontar o componente
+  /* limpa intervalo ao desmontar */
   useEffect(() => {
-    // Opcional: iniciar integração automaticamente na carga da página
-    // startIntegration();
-
     return () => {
-      if (pollingIntervalRef.current) {
-        clearInterval(pollingIntervalRef.current);
-      }
+      if (pollingRef.current) clearInterval(pollingRef.current);
     };
   }, []);
 
+  /* ---------------- render ---------------- */
   return (
     <div className="settings-container">
       <div className="settings-box">
-        {/* Botão Voltar */}
         <button className="settings-back" onClick={() => navigate(-1)}>
           &larr; Voltar
         </button>
 
         <h2 className="settings-title">Configurar Número Remetente</h2>
-
-        <label className="settings-label">Número do WhatsApp (ex: 5511999999999)</label>
+        <label className="settings-label">Número do WhatsApp</label>
         <input
           className="settings-input"
           placeholder="5511999999999"
           value={value}
           onChange={(e) => setValue(e.target.value)}
         />
-
         <button onClick={handleSave} className="settings-button">
           Salvar
         </button>
 
-        <hr style={{ margin: "2rem 0" }} />
+        <hr style={{ margin: '2rem 0' }} />
 
         <h2 className="settings-title">Integração WhatsApp</h2>
-        <button onClick={startIntegration} disabled={loading} className="settings-button">
-          {loading ? "Gerando QR Code..." : "Integrar WhatsApp"}
-        </button>
+        {connected ? (
+          <p className="text-green-600 font-semibold">✅ Conectado!</p>
+        ) : (
+          <button
+            onClick={startIntegration}
+            disabled={loading}
+            className="settings-button"
+          >
+            {loading ? 'Gerando QR...' : 'Integrar WhatsApp'}
+          </button>
+        )}
 
-        {/* Modal do QR Code */}
-        {showModal && (
+        {/* modal QR */}
+        {showModal && qrCode && (
           <div className="modal-overlay" onClick={() => setShowModal(false)}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <h3>Escaneie o QR Code com seu WhatsApp</h3>
-              <img src={qrCode ?? ""} alt="QR Code WhatsApp" style={{ width: 200, height: 200 }} />
+            <div
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h3>Escaneie o QR Code</h3>
+              <img src={qrCode} alt="QR Code" style={{ width: 220 }} />
               <button onClick={() => setShowModal(false)} style={{ marginTop: 20 }}>
                 Fechar
               </button>
