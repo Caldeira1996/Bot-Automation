@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSenderNumber } from "../components/SenderNumberContext";
 import "../styles/settings.css";
@@ -12,6 +12,11 @@ export default function Settings() {
   const [qrCode, setQrCode] = useState<string | null>(null);
   // Estado para mostrar status da integração
   const [loading, setLoading] = useState(false);
+  // Estado para controlar se modal está aberto
+  const [showModal, setShowModal] = useState(false);
+
+  // Guarda o ID do intervalo para limpar depois
+  const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const handleSave = () => {
     if (!/^\d{12,13}$/.test(value)) {
@@ -23,28 +28,99 @@ export default function Settings() {
     navigate(-1);
   };
 
-  // Função para iniciar integração (backend /start)
   const startIntegration = async () => {
+    console.log("🚀 Iniciando integração...");
     setLoading(true);
     setQrCode(null);
+
     try {
-      await fetch("http://localhost:3333/start", { method: "POST" });
+      const response = await fetch("http://localhost:3333/start", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log("✅ Start response:", result);
+
+      // Limpa se já tiver um intervalo rodando
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+
+      let attempts = 0;
+      const maxAttempts = 30; // 60 segundos total
 
       // Fazer polling a cada 2s para pegar o QR
-      const interval = setInterval(async () => {
-        const res = await fetch("http://localhost:3333/qr");
-        if (res.ok) {
-          const data = await res.json();
-          setQrCode(data.qr);
-          setLoading(false);
-          clearInterval(interval);
+      pollingIntervalRef.current = setInterval(async () => {
+        attempts++;
+        console.log(`🔄 Tentativa ${attempts}/${maxAttempts} - Buscando QR...`);
+
+        try {
+          const res = await fetch("http://localhost:3333/qr");
+
+          if (res.ok) {
+            const data = await res.json();
+            console.log("📱 QR Response:", { hasQR: !!data.qr, status: data.status });
+
+            if (data.qr) {
+              console.log("✅ QR Code recebido!");
+              setQrCode(data.qr);
+              setLoading(false);
+              setShowModal(true); // Abre modal quando QR disponível
+              if (pollingIntervalRef.current) {
+                clearInterval(pollingIntervalRef.current);
+                pollingIntervalRef.current = null;
+              }
+            }
+          } else {
+            console.log("⚠️ QR não disponível ainda...");
+          }
+
+          if (attempts >= maxAttempts) {
+            console.log("⏰ Timeout - Máximo de tentativas atingido");
+            setLoading(false);
+            alert("Timeout: QR Code não foi gerado a tempo. Tente novamente.");
+            if (pollingIntervalRef.current) {
+              clearInterval(pollingIntervalRef.current);
+              pollingIntervalRef.current = null;
+            }
+          }
+        } catch (error) {
+          console.error("❌ Erro ao buscar QR code:", error);
+
+          if (attempts >= maxAttempts) {
+            setLoading(false);
+            if (pollingIntervalRef.current) {
+              clearInterval(pollingIntervalRef.current);
+              pollingIntervalRef.current = null;
+            }
+          }
         }
       }, 2000);
     } catch (error) {
-      alert("Erro ao iniciar integração");
+      console.error("❌ Erro ao iniciar integração:", error);
+      alert("Erro ao iniciar integração: " + error);
       setLoading(false);
     }
   };
+
+  // Cleanup do intervalo ao desmontar o componente
+  useEffect(() => {
+    // Opcional: iniciar integração automaticamente na carga da página
+    // startIntegration();
+
+    return () => {
+      if (pollingIntervalRef.current) {
+        clearInterval(pollingIntervalRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="settings-container">
@@ -56,9 +132,7 @@ export default function Settings() {
 
         <h2 className="settings-title">Configurar Número Remetente</h2>
 
-        <label className="settings-label">
-          Número do WhatsApp (ex: 5511999999999)
-        </label>
+        <label className="settings-label">Número do WhatsApp (ex: 5511999999999)</label>
         <input
           className="settings-input"
           placeholder="5511999999999"
@@ -73,22 +147,20 @@ export default function Settings() {
         <hr style={{ margin: "2rem 0" }} />
 
         <h2 className="settings-title">Integração WhatsApp</h2>
-        <button
-          onClick={startIntegration}
-          disabled={loading}
-          className="settings-button"
-        >
+        <button onClick={startIntegration} disabled={loading} className="settings-button">
           {loading ? "Gerando QR Code..." : "Integrar WhatsApp"}
         </button>
 
-        {qrCode && (
-          <div style={{ marginTop: 20, textAlign: "center" }}>
-            <p>Escaneie o QR Code abaixo com seu WhatsApp:</p>
-            <img
-              src={qrCode}
-              alt="QR Code WhatsApp"
-              style={{ width: "200px", height: "200px" }}
-            />
+        {/* Modal do QR Code */}
+        {showModal && (
+          <div className="modal-overlay" onClick={() => setShowModal(false)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h3>Escaneie o QR Code com seu WhatsApp</h3>
+              <img src={qrCode ?? ""} alt="QR Code WhatsApp" style={{ width: 200, height: 200 }} />
+              <button onClick={() => setShowModal(false)} style={{ marginTop: 20 }}>
+                Fechar
+              </button>
+            </div>
           </div>
         )}
       </div>
