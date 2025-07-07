@@ -29,6 +29,7 @@ export default function App() {
         Configurações
       </Link>
 
+
       <div className="button-group">
         <button className="btn" onClick={() => setAddOpen(true)}>
           Adicionar Contatos
