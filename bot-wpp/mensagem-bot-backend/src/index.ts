@@ -113,11 +113,11 @@ app.post('/send-message', async (req, res) => {
     const chatId = `${number.replace(/\D/g, '')}@c.us`;
     console.log(`📲 Tentando enviar mensagem para: ${chatId}`);
     
-    const numStatus = await client.checkNumberStatus(chatId);
-    if (!numStatus?.canReceiveMessage) {
-      console.log('❌ Número não registrado no WhatsApp:', chatId);
-      return res.status(400).json({ error: 'Número não registrado no WhatsApp' });
-    }
+    // const numStatus = await client.checkNumberStatus(chatId);
+    // if (!numStatus?.canReceiveMessage) {
+    //   console.log('❌ Número não registrado no WhatsApp:', chatId);
+    //   return res.status(400).json({ error: 'Número não registrado no WhatsApp' });
+    // }
 
     const sendResult = await client.sendText(chatId, message);
     console.log('✅ Mensagem enviada com sucesso:', sendResult);
