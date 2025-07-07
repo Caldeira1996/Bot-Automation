@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { Contact } from "./types";
+import { Link } from "react-router-dom";
 
 import "./styles/main.css";
 import "./styles/layout.css";
@@ -23,6 +24,10 @@ export default function App() {
   return (
     <main className="container">
       <h1>Bot de Mensagens</h1>
+
+      <Link to="/settings" className="text-sm underline">
+        Configurações
+      </Link>
 
       <div className="button-group">
         <button className="btn" onClick={() => setAddOpen(true)}>
