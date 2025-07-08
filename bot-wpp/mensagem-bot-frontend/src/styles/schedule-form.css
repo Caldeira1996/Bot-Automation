@@ -28,6 +28,10 @@
   gap: 2rem;
   color: #222;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  display: flex;          /* adiciona flex para alinhar conteúdo em linha */
+  align-items: center;    /* centraliza checkbox e texto verticalmente */
+  gap: 0.5rem;            /* espaçamento entre checkbox e texto */
 }
 
 .schedule-modal h2 {
@@ -68,6 +72,14 @@
 .schedule-modal input:focus {
   border-color: var(--color-accent);
   box-shadow: 0 0 8px var(--color-accent);
+}
+
+/* input dentro do label (checkbox) */
+.schedule-modal input[type="checkbox"] {
+  margin-left: 0;         /* remover margem lateral para não empurrar */
+  width: 18px;            /* tamanho confortável */
+  height: 18px;
+  cursor: pointer;
 }
 
 .btn-primary {
@@ -129,6 +141,13 @@
   }
 }
 
+.schedule-modal input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
 label {
   color: var(--color-accent);
+  justify-content: center;
+  margin-top: 0;
+  margin-bottom: 0.3rem;
 }
