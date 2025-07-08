@@ -1,9 +1,6 @@
-import { Dialog } from "@headlessui/react"; // Certifique-se de que esse componente está correto
 import { useState } from "react";
+import "../styles/schedule-form.css";
 
-import "../styles/schedule-form.css"
-
-// Recebe os parâmetros: isOpen, onClose e onSchedule
 export default function ScheduleForm({
   isOpen,
   onClose,
@@ -13,31 +10,25 @@ export default function ScheduleForm({
   onClose: () => void;
   onSchedule: (params: { start: string; intervalMin: number; intervalMax: number }) => void;
 }) {
-  const [start, setStart] = useState(""); // Defina um estado para "start"
+  const [start, setStart] = useState("");
   const [intervalMin, setIntervalMin] = useState(0);
   const [intervalMax, setIntervalMax] = useState(0);
 
-  if (!isOpen) return null; // Se o modal não estiver aberto, não renderize nada
+  if (!isOpen) return null;
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="Schedule-modal">
-      <div className="modal-backdrop" aria-hidden="true" />
-      <div className="modal-panel">
-        <Dialog.Title className="text-lg font-semibold mb-2" id="schedule-send">Agendar Envio</Dialog.Title>
-
-        {/* Botão de Fechar */}
-        <button 
-        type="button"
-        className="close-btn"
-        onClick={onClose} // chama a função onClose para fechar o modal
-        >
-          X
+    <div className="modal-backdrop">
+      <div className="schedule-modal">
+        <button type="button" className="close-btn" onClick={onClose}>
+          &times;
         </button>
+
+        <h2>Agendar Envio</h2>
 
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            onSchedule({ start, intervalMin, intervalMax }); // Passa as configurações para onSchedule
+            onSchedule({ start, intervalMin, intervalMax });
           }}
         >
           <div>
@@ -70,9 +61,9 @@ export default function ScheduleForm({
             />
           </div>
 
-          <button id="Shedule" type="submit">Agendar</button>
+          <button type="submit" className="btn-primary">Agendar</button>
         </form>
       </div>
-    </Dialog>
+    </div>
   );
 }

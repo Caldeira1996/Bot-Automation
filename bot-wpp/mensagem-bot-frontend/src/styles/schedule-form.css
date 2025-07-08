@@ -1,141 +1,134 @@
 /* schedule-form.css */
-.schedule-form {
-  margin-top: 2rem;
-}
 
-.schedule-form input,
-.schedule-form button {
-  margin-top: 0.5rem;
-}
-
-#btn-schedule-shipments {
-  font-size: 18px;
-  size: 18px;
-}
-
-.schedule-send {
-  all: unset;
-  color: black;
-}
-
-/* Estilo geral do modal */
-.Schedule-modal {
-  position: absolute;
-  background: rgba(0, 0, 0, 0.5); /* Fundo escuro para o backdrop */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000; /* Modal acima de outros conteúdos */
-  overflow: auto;
-}
-
-/* O fundo do modal */
 .modal-backdrop {
-  background: rgba(0, 0, 0, 0.5); /* Fundo mais escuro para o backdrop */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(13, 27, 42, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-/* Painel do modal (a caixa que aparece) */
-.modal-panel {
-  background: #fff; /* Fundo branco para o modal */
-  padding: 20px;
-  border-radius: 8px; /* Borda arredondada */
+.schedule-modal {
+  background-color: var(--color-panel);
+  padding: 3rem 3.5rem;
+  border-radius: 20px;
+  max-width: 540px;
   width: 100%;
-  max-width: 500px; /* Tamanho máximo do modal */
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
-  z-index: 1100;
-  overflow: hidden; /* Evitar que o conteúdo ultrapasse a borda */
-  color: #333; /* Cor de texto escuro para não herdar o branco */
-}
-
-/* Título do modal */
-.modal-panel h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-/* Formulário dentro do modal */
-.modal-panel form {
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.45);
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 2rem;
+  color: #222;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Estilos para os rótulos */
-.modal-panel label {
-  font-size: 1rem;
-  font-weight: 500;
+.schedule-modal h2 {
+  margin: 0 0 1.5rem 0;
+  font-weight: 800;
+  font-size: 2rem;
+  text-align: center;
+  color: var(--color-accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  user-select: none;
 }
 
-/* Estilos para os campos de input */
-.modal-panel input {
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  outline: none;
-}
-
-.modal-panel input:focus {
-  border-color: #005f73; /* Cor do foco */
-  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilo para os outros botões do modal */
-.modal-panel button {
-  padding: 10px 15px;
-  background-color: #005f73; /* Cor de fundo do botão */
-  color: white;
-  font-size: 1rem;
-  font-weight: 600;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.modal-panel button:hover {
-  background-color: #003d47; /* Cor do fundo do botão quando hover */
-}
-
-/* Responsividade para telas menores */
-@media (max-width: 600px) {
-  .modal-panel {
-    padding: 15px;
-  }
-
-  .modal-panel h2 {
-    font-size: 1.25rem;
-  }
-
-  .modal-panel input,
-  .modal-panel button {
-    font-size: 0.875rem;
-  }
-}
-
-/* Estilo para o botão de fechar */
-button.close-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: red;  /* Cor de fundo vermelha */
-  color: white; /* Cor do texto */
-  border: none;
-  font-size: 1.5rem;
-  width: 40px; /* Tamanho fixo */
-  height: 40px;
-  border-radius: 50%; /* Forma circular */
+.schedule-modal form {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-/* Quando o mouse passar em cima, fundo vermelho mais claro */
-button.close-btn:hover {
-  background-color: #ff4d4d;
-  transform: scale(1.1);
+.schedule-modal label {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.schedule-modal input {
+  margin-left: 1rem;
+  padding: 0.85rem 1.25rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  border: 1.8px solid #ccc;
+  outline-offset: 3px;
+  outline-color: var(--color-accent);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  font-family: inherit;
+  color: #222;
+}
+
+.schedule-modal input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+}
+
+.btn-primary {
+  padding: 0.9rem 1.6rem;
+  font-size: 1.15rem;
+  border-radius: 12px;
+  background-color: var(--color-accent);
+  color: white;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  user-select: none;
+}
+
+.btn-primary:hover {
+  background-color: #135e4f;
+  transform: scale(1.05);
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 2.2rem;
+  color: #666;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+  user-select: none;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  color: var(--color-accent);
+  transform: rotate(90deg);
+}
+
+@media (max-width: 600px) {
+  .schedule-modal {
+    padding: 2rem 2rem;
+    max-width: 95vw;
+  }
+
+  .schedule-modal h2 {
+    font-size: 1.6rem;
+  }
+
+  .btn-primary {
+    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .schedule-modal input {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+  }
+}
+
+label {
+  color: var(--color-accent);
 }
