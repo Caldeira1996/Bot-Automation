@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as XLSX from "xlsx";
 import type { Contact } from "../types";
-import "../styles/contact-modal.css";
+import "../styles/contact-add-modal.css";
 
 interface ContactAddModalProps {
   onClose: () => void;
