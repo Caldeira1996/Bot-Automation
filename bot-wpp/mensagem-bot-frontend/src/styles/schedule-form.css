@@ -12,3 +12,130 @@
   font-size: 18px;
   size: 18px;
 }
+
+.schedule-send {
+  all: unset;
+  color: black;
+}
+
+/* Estilo geral do modal */
+.modal {
+  position: absolute;
+  background: rgba(0, 0, 0, 0.5); /* Fundo escuro para o backdrop */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Modal acima de outros conteúdos */
+  overflow: auto;
+}
+
+/* O fundo do modal */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.5); /* Fundo mais escuro para o backdrop */
+}
+
+/* Painel do modal (a caixa que aparece) */
+.modal-panel {
+  background: #fff; /* Fundo branco para o modal */
+  padding: 20px;
+  border-radius: 8px; /* Borda arredondada */
+  width: 100%;
+  max-width: 500px; /* Tamanho máximo do modal */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  z-index: 1100;
+  overflow: hidden; /* Evitar que o conteúdo ultrapasse a borda */
+  color: #333; /* Cor de texto escuro para não herdar o branco */
+}
+
+/* Título do modal */
+.modal-panel h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Formulário dentro do modal */
+.modal-panel form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Estilos para os rótulos */
+.modal-panel label {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Estilos para os campos de input */
+.modal-panel input {
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  outline: none;
+}
+
+.modal-panel input:focus {
+  border-color: #005f73; /* Cor do foco */
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo para os outros botões do modal */
+.modal-panel button {
+  padding: 10px 15px;
+  background-color: #005f73; /* Cor de fundo do botão */
+  color: white;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.modal-panel button:hover {
+  background-color: #003d47; /* Cor do fundo do botão quando hover */
+}
+
+/* Responsividade para telas menores */
+@media (max-width: 600px) {
+  .modal-panel {
+    padding: 15px;
+  }
+
+  .modal-panel h2 {
+    font-size: 1.25rem;
+  }
+
+  .modal-panel input,
+  .modal-panel button {
+    font-size: 0.875rem;
+  }
+}
+
+/* Estilo para o botão de fechar */
+button.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: red;  /* Cor de fundo vermelha */
+  color: white; /* Cor do texto */
+  border: none;
+  font-size: 1.5rem;
+  width: 40px; /* Tamanho fixo */
+  height: 40px;
+  border-radius: 50%; /* Forma circular */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Quando o mouse passar em cima, fundo vermelho mais claro */
+button.close-btn:hover {
+  background-color: #ff4d4d;
+  transform: scale(1.1);
+}

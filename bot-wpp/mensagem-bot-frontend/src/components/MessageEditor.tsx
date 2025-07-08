@@ -20,6 +20,7 @@ interface MessageEditorProps {
   setActiveTab: Dispatch<SetStateAction<"manual" | "contatos">>;
   showSelectModal: boolean;
   setShowSelectModal: Dispatch<SetStateAction<boolean>>;
+  hideControls?: boolean;
 }
 
 export type MessageEditorRef = {
@@ -27,7 +28,7 @@ export type MessageEditorRef = {
 };
 
 const MessageEditor = forwardRef<MessageEditorRef, MessageEditorProps>(function MessageEditor(
-  { template, setTemplate, contacts, activeTab, setActiveTab, showSelectModal, setShowSelectModal },
+  { hideControls = false, template, setTemplate, contacts, activeTab, setActiveTab, showSelectModal, setShowSelectModal },
   ref
 ) {
   const [manualPhones, setManualPhones] = useState("");
@@ -132,34 +133,44 @@ const MessageEditor = forwardRef<MessageEditorRef, MessageEditorProps>(function 
       <section className="p-4 space-y-4 max-w-xl">
         <h2 className="text-xl font-semibold">Envio de Mensagem</h2>
 
-        <div className="flex space-x-2">
-          <button
-            className={`btn ${activeTab === "manual" ? "bg-green-700 text-white" : "bg-gray-200"}`}
-            onClick={() => setActiveTab("manual")}
-          >
-            Inserir manualmente
-          </button>
-          <button
-            className={`btn ${activeTab === "contatos" ? "bg-green-700 text-white" : "bg-gray-200"}`}
-            onClick={() => setShowSelectModal(true)}
-          >
-            Selecionar contatos
-          </button>
-        </div>
+        {/* Se hideControls for true, não renderiza esses botões */}
+        {!hideControls && (
+          <>
+            <div className="flex space-x-2">
+              <button
+                className={`btn ${activeTab === "manual" ? "bg-green-700 text-white" : "bg-gray-200"}`}
+                onClick={() => setActiveTab("manual")}
+              >
+                Inserir manualmente
+              </button>
+              <button
+                className={`btn ${activeTab === "contatos" ? "bg-green-700 text-white" : "bg-gray-200"}`}
+                onClick={() => setShowSelectModal(true)}
+              >
+                Selecionar contatos
+              </button>
+            </div>
 
-        <div className="input-excel">
-          <label htmlFor="upload-excel" className="btn btn-secondary" style={{ cursor: "pointer" }}>
-            Importar Excel (.xls, .xlsx)
-          </label>
-          <input
-            id="upload-excel"
-            type="file"
-            accept=".xlsx,.xls,.docx"
-            onChange={handleFile}
-            ref={fileInputRef}
-            style={{ display: "none" }}
-          />
-        </div> 
+            <div className="input-excel">
+              <label
+                htmlFor="upload-excel"
+                className="btn btn-secondary"
+                style={{ cursor: "pointer" }}
+              >
+                Importar Excel (.xls, .xlsx)
+              </label>
+            </div>
+          </>
+        )}
+
+        <input
+          id="upload-excel"
+          type="file"
+          accept=".xlsx,.xls,.docx"
+          onChange={handleFile}
+          ref={fileInputRef}
+          style={{ display: "none" }}
+        />
 
         {mergedPhones.length > 0 && (
           <div className="import-summary">
