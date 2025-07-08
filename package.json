@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "mammoth": "^1.9.1",
+    "xlsx": "^0.18.5"
+  }
+}

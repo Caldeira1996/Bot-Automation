@@ -19,3 +19,108 @@ button:disabled {
   cursor: not-allowed;
   color: #ccc;
 }
+
+.input-excel{
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #2d7a2d; /* verde escuro */
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+  transition: background-color 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.input-excel {
+  background-color: #245d24; /* verde mais escuro no hover */
+}
+
+textarea.input {
+  min-height: 200px;
+  resize: vertical;
+}
+
+#upload-excel + label {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: #2d7a2d;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  user-select: none;
+  transition: background-color 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+#upload-excel + label:hover {
+  background-color: #245d24;
+}
+
+.phone-bubbles-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); /* várias colunas responsivas */
+  gap: 0.15rem;  /* gap pequeno */
+  max-height: 120px;  /* limite de altura */
+  overflow-y: auto;  /* scroll vertical se estourar altura */
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  background-color: #f9fafb;
+  border-radius: 6px;
+}
+
+.phone-bubble {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 15px;
+  font-size: 0.85rem;
+  background-color: #d1f7d1; /* default verde claro */
+  color: #2a662a;
+  position: relative;
+}
+
+.phone-bubble.invalid {
+  background-color: #f9d6d5; /* vermelho claro */
+  color: #8b2a2a;
+}
+
+.icon-circle {
+  justify-content: space-around;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 0.85rem;
+  line-height: 16px;
+  color: white;
+}
+
+.icon-valid {
+  background-color: green;
+}
+
+.icon-invalid {
+  background-color: red;
+}
+
+.remove-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  line-height: 1;
+  color: inherit;
+  padding: 0 0.2rem;
+  margin-left: auto;
+  transition: color 0.2s ease;
+}
+
+.remove-btn:hover {
+  color: black;
+}
