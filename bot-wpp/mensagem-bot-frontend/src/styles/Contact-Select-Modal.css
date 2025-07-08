@@ -169,3 +169,28 @@ p {
     padding: 0.6rem 1rem;
   }
 }
+
+.contacts-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 colunas iguais */
+  gap: 0.75rem 1rem; /* espaçamento vertical e horizontal */
+  max-height: 16rem; /* mantém o max height com scroll */
+  overflow-y: auto;
+  padding-right: 0.5rem; /* para evitar esconder barra de rolagem */
+}
+
+.contact-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  user-select: none;
+  white-space: nowrap; /* evitar quebra dentro do item */
+}
+
+.contact-item input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}

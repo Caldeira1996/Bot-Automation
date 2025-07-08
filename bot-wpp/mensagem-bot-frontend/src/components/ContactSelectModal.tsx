@@ -54,10 +54,10 @@ export default function ContactSelectModal({
           className="input w-full mb-4"
         />
 
-        <div className="max-h-64 overflow-auto mb-4">
+        <div className="contacts-grid max-h-64 overflow-auto mb-4">
           {filtered.length === 0 && <p>Nenhum contato encontrado.</p>}
           {filtered.map((c) => (
-            <label key={c.telefone} className="flex items-center space-x-2 mb-2">
+            <label key={c.telefone} className="contact-item">
               <input
                 type="checkbox"
                 checked={tempSelected.includes(c.telefone)}
@@ -69,6 +69,7 @@ export default function ContactSelectModal({
             </label>
           ))}
         </div>
+
 
         <div className="flex justify-end space-x-2">
           <button className="btn btn-secondary" onClick={onClose}>
