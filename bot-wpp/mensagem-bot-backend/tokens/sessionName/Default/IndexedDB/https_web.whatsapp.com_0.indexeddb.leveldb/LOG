@@ -1,0 +1,13 @@
+2025/07/07-21:11:31.814 1b34 Reusing MANIFEST C:\Users\Caldeira\OneDrive\Documentos\GitHub\Bot-Automation\bot-wpp\mensagem-bot-backend\tokens\sessionName\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2025/07/07-21:11:31.815 1b34 Recovering log #44
+2025/07/07-21:11:31.815 1b34 Reusing old log C:\Users\Caldeira\OneDrive\Documentos\GitHub\Bot-Automation\bot-wpp\mensagem-bot-backend\tokens\sessionName\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/000044.log 
+2025/07/07-21:11:33.206 3b20 Level-0 table #50: started
+2025/07/07-21:11:33.208 3b20 Level-0 table #50: 23599 bytes OK
+2025/07/07-21:11:33.208 3b20 Delete type=0 #44
+2025/07/07-21:11:33.209 3b20 Manual compaction at level-0 from '\x00\x1b\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1c\x00\x00\x00' @ 0 : 0; will stop at (end)
+2025/07/07-21:11:34.127 4280 Compacting 1@1 + 1@2 files
+2025/07/07-21:11:34.148 4280 Generated table #51@1: 28219 keys, 1135879 bytes
+2025/07/07-21:11:34.148 4280 Compacted 1@1 + 1@2 files => 1135879 bytes
+2025/07/07-21:11:34.149 4280 compacted to: files[ 0 0 1 0 0 0 0 ]
+2025/07/07-21:11:34.149 4280 Delete type=2 #47
+2025/07/07-21:11:34.149 4280 Delete type=2 #50

@@ -96,37 +96,42 @@ app.get('/status', (_req, res) => {
   });
 });
 
-/* ---------- POST /send-message ---------- */
+/* ---------- POST /send-message (múltiplos números) ---------- */
 app.post('/send-message', async (req, res) => {
   if (!client || sessionStatus !== 'CONNECTED') {
     console.log('❌ Tentativa de enviar mensagem mas o bot não está conectado');
     return res.status(400).json({ error: 'Bot não conectado' });
   }
 
-  const { number, message } = req.body;
-  if (!number || !message) {
-    console.log('❌ Número ou mensagem não enviados na requisição');
-    return res.status(400).json({ error: 'Número e mensagem são obrigatórios' });
+  const { numbers, message } = req.body;
+
+  if (!Array.isArray(numbers) || numbers.length === 0 || !message) {
+    console.log('❌ Números ou mensagem inválidos');
+    return res.status(400).json({ error: 'Informe ao menos um número válido e uma mensagem' });
   }
 
-  try {
-    const chatId = `${number.replace(/\D/g, '')}@c.us`;
-    console.log(`📲 Tentando enviar mensagem para: ${chatId}`);
-    
-    // const numStatus = await client.checkNumberStatus(chatId);
-    // if (!numStatus?.canReceiveMessage) {
-    //   console.log('❌ Número não registrado no WhatsApp:', chatId);
-    //   return res.status(400).json({ error: 'Número não registrado no WhatsApp' });
-    // }
+  const results: { number: string; status: string; detail?: string }[] = [];
 
-    const sendResult = await client.sendText(chatId, message);
-    console.log('✅ Mensagem enviada com sucesso:', sendResult);
+  for (const numberRaw of numbers) {
+    const number = String(numberRaw).replace(/\D/g, '');
+    const chatId = `${number}@c.us`;
 
-    res.json({ message: 'Mensagem enviada com sucesso', result: sendResult });
-  } catch (err) {
-    console.error('❌ Falha ao enviar mensagem:', err);
-    res.status(500).json({ error: 'Erro interno no envio', detail: String(err) });
+    if (!/^\d{12,13}$/.test(number)) {
+      results.push({ number, status: 'invalid_format' });
+      continue;
+    }
+
+    try {
+      const result = await client.sendText(chatId, message);
+      console.log(`✅ Mensagem enviada para ${number}`);
+      results.push({ number, status: 'success' });
+    } catch (err: any) {
+      console.error(`❌ Erro ao enviar para ${number}:`, err);
+      results.push({ number, status: 'error', detail: String(err.message || err) });
+    }
   }
+
+  res.json({ results });
 });
 
 

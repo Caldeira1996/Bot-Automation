@@ -1,14 +1,21 @@
 import { useState } from 'react';
 
 export default function MessageEditor() {
-  /* Campos controlados */
-  const [template, setTemplate]   = useState('');
-  const [phone, setPhone]         = useState('');
-  const [sending, setSending]     = useState(false);
+  const [template, setTemplate] = useState('');
+  const [phone, setPhone] = useState('');
+  const [sending, setSending] = useState(false);
 
-  /* Regex simples: 12 ou 13 dígitos (55 + DDD + número) */
-  const phoneIsValid = /^\d{12,13}$/.test(phone);
-  const msgIsValid   = template.trim().length > 0;
+  // Lista de números extraídos do input
+  const phoneList = phone
+    .split(',')
+    .map(p => p.trim())
+    .filter(p => p.length > 0);
+
+  // Todos os números são válidos (12 ou 13 dígitos)
+  const allPhonesValid = phoneList.every(p => /^\d{12,13}$/.test(p));
+  const phoneIsValid = phoneList.length > 0 && allPhonesValid;
+
+  const msgIsValid = template.trim().length > 0;
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -17,10 +24,10 @@ export default function MessageEditor() {
     setSending(true);
     try {
       const res = await fetch('http://localhost:3333/send-message', {
-        method : 'POST',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body   : JSON.stringify({
-          number : phone,
+        body: JSON.stringify({
+          numbers: phoneList,
           message: template,
         }),
       });
@@ -29,6 +36,7 @@ export default function MessageEditor() {
       if (res.ok) {
         alert('✅ Mensagem enviada com sucesso!');
         setTemplate('');
+        setPhone('');
       } else {
         alert('❌ Erro: ' + (data.error || 'Falha ao enviar'));
       }
@@ -43,15 +51,18 @@ export default function MessageEditor() {
     <section className="p-4 space-y-4 max-w-lg">
       <h2 className="text-xl font-semibold">Envio de Mensagem</h2>
 
-      {/* Número de destino */}
+      {/* Campo para múltiplos números */}
       <input
         className="input w-full"
-        placeholder="Número: 55DDDXXXXXXXXX"
+        placeholder="Números: 55DDDXXXXXXXXX,55DDDXXXXXXXXX"
         value={phone}
-        onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
+        onChange={(e) => {
+          const onlyDigitsAndComma = e.target.value.replace(/[^\d,]/g, '');
+          setPhone(onlyDigitsAndComma);
+        }}
       />
 
-      {/* Texto da mensagem */}
+      {/* Campo de mensagem */}
       <textarea
         className="input w-full"
         rows={8}
