@@ -194,3 +194,8 @@ p {
   width: 18px;
   height: 18px;
 }
+
+#btn-select-contact {
+    justify-content: center;
+    margin: auto;
+}
