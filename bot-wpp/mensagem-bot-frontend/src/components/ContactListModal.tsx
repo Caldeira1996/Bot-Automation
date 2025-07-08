@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Contact } from "../types";
 import ConfirmModal from "./ConfirmModal";
-import "../styles/contact-modal.css";
+import "../styles/contact-list.css";
 
 interface ContactListModalProps {
   contacts: Contact[];
@@ -20,7 +20,7 @@ export default function ContactListModal({
 
   return (
     <div className="modal-backdrop">
-      <div className="modal">
+      <div className="contact-list-modal">
         <button className="modal-close-btn" onClick={onClose}>
           &times;
         </button>
@@ -41,13 +41,14 @@ export default function ContactListModal({
               <tbody>
                 {contacts.map((c, i) => (
                   <tr key={i}>
-                    <td>{c.nome}</td>
+                    <td>{c.nome || "-"}</td>
                     <td>{c.telefone}</td>
                     <td>
                       <button 
-                      className="btn btn-danger" 
-                      id="btn-remove-contact"
-                      onClick={() => onRemove(i)}>
+                        className="btn btn-danger" 
+                        id="btn-remove-contact"
+                        onClick={() => onRemove(i)}
+                      >
                         Excluir
                       </button>
                     </td>

@@ -2,7 +2,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as XLSX from "xlsx";
 import type { Contact } from "../types";
-import "../styles/contact-add-modal.css";
+
+import "../styles/contact-add-modal.css"
 
 interface ContactAddModalProps {
   onClose: () => void;
@@ -59,7 +60,7 @@ export default function ContactAddModal({ onClose, onAdd }: ContactAddModalProps
   /* ---------- UI ---------- */
   return (
     <div className="modal-backdrop">
-      <div className="modal">
+      <div className="Contact-Add-modal">
         <button className="modal-close-btn" onClick={onClose}>
           &times;
         </button>

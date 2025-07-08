@@ -2,91 +2,186 @@
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;  /* garantir full viewport */
+  height: 100vh;
   background: rgba(13, 27, 42, 0.85);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 1rem; /* evitar colar nas bordas da tela */
+  box-sizing: border-box;
 }
 
-.modal {
+.Contact-Add-modal {
   background-color: var(--color-panel);
-  padding: 2.5rem 3rem;       /* Mais padding para espaçar */
-  border-radius: 16px;
-  max-width: 520px;           /* Um pouco maior para caber melhor */
+  padding: 3rem 3.5rem;
+  border-radius: 20px;
+  max-width: 540px;
   width: 100%;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.45);
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;               /* Espaço maior entre os filhos diretos */
-  color: #222;               /* Cor do texto para garantir contraste */
+  gap: 2rem;
+  color: #222;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.modal h2 {
-  margin: 0 0 1rem 0;
-  font-weight: 700;
-  font-size: 1.75rem;
+.Contact-Add-modal h2 {
+  margin: 0 0 1.5rem 0;
+  font-weight: 800;
+  font-size: 2rem;
   text-align: center;
   color: var(--color-accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  user-select: none;
 }
 
 .mode-switch {
-  margin-bottom: 1.5rem;
+  display: flex;
   gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1rem;
 }
 
 .mode-switch button {
-  padding: 0.6rem 1.2rem;
-  font-weight: 600;
-  font-size: 1rem;
+  flex: 1;
+  padding: 0.75rem 1.5rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  border: none;
+  background: #324b63;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.25s ease, transform 0.2s ease;
+  user-select: none;
+}
+
+.mode-switch button:hover {
+  background: #2a3e53;
+  transform: scale(1.05);
+}
+
+.mode-switch button.active {
+  background: var(--color-accent);
+  box-shadow: 0 0 12px var(--color-accent);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;             /* Espaçamento legal entre inputs e botões */
+  gap: 1.5rem;
 }
 
 .input {
-  padding: 0.7rem 1rem;
-  font-size: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  outline-offset: 2px;
+  padding: 0.85rem 1.25rem;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  border: 1.8px solid #ccc;
+  outline-offset: 3px;
   outline-color: var(--color-accent);
-  transition: border-color 0.2s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  font-family: inherit;
+  color: #222;
+  user-select: text;
 }
 
 .input:focus {
   border-color: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+}
+
+textarea.input {
+  resize: vertical;
+  min-height: 100px;
+  max-height: 200px;
+  font-family: inherit;
 }
 
 .btn-primary {
-  padding: 0.75rem 1.25rem;
-  font-size: 1.1rem;
-  border-radius: 8px;
+  padding: 0.9rem 1.6rem;
+  font-size: 1.15rem;
+  border-radius: 12px;
   background-color: var(--color-accent);
   color: white;
-  font-weight: 700;
+  font-weight: 800;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  border: none;
+  transition: background-color 0.3s ease, transform 0.15s ease;
+  user-select: none;
 }
 
 .btn-primary:hover {
-  background-color: #135e4f; /* cor mais escura do verde */
+  background-color: #135e4f;
+  transform: scale(1.05);
 }
 
 .modal-close-btn {
+  position: absolute;
   top: 16px;
   right: 18px;
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   color: #666;
-  transition: color 0.3s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+  user-select: none;
+  padding: 0;
+  line-height: 1;
 }
 
 .modal-close-btn:hover {
   color: var(--color-accent);
+  transform: rotate(90deg);
+}
+
+.import-excel {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+#import-excel {
+  background: #2e7d32;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  user-select: none;
+  border: none;
+  box-shadow: 0 2px 6px rgba(46,125,50,0.6);
+}
+
+#import-excel:hover {
+  background: #4caf50;
+  color: #222;
+  transform: scale(1.07);
+}
+
+@media (max-width: 600px) {
+  .Contact-Add-modal {
+    padding: 2rem 2rem;
+    max-width: 95vw;
+  }
+
+  .Contact-Add-modal h2 {
+    font-size: 1.6rem;
+  }
+
+  .mode-switch button,
+  .btn-primary {
+    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  .input {
+    font-size: 1rem;
+    padding: 0.6rem 1rem;
+  }
 }

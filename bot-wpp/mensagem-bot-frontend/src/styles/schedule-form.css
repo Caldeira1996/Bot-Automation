@@ -19,7 +19,7 @@
 }
 
 /* Estilo geral do modal */
-.modal {
+.Schedule-modal {
   position: absolute;
   background: rgba(0, 0, 0, 0.5); /* Fundo escuro para o backdrop */
   display: flex;

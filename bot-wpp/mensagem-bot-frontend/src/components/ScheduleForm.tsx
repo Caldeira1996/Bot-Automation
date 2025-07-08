@@ -20,7 +20,7 @@ export default function ScheduleForm({
   if (!isOpen) return null; // Se o modal não estiver aberto, não renderize nada
 
   return (
-    <Dialog open={isOpen} onClose={onClose} className="modal">
+    <Dialog open={isOpen} onClose={onClose} className="Schedule-modal">
       <div className="modal-backdrop" aria-hidden="true" />
       <div className="modal-panel">
         <Dialog.Title className="text-lg font-semibold mb-2" id="schedule-send">Agendar Envio</Dialog.Title>
