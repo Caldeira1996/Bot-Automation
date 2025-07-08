@@ -1,7 +1,7 @@
 import { useState } from "react";
 import type { Contact } from "../types";
 import ConfirmModal from "./ConfirmModal";
-import "../styles/contact-list.css";
+import "../styles/Contact-List-Modal.css";
 
 interface ContactListModalProps {
   contacts: Contact[];
