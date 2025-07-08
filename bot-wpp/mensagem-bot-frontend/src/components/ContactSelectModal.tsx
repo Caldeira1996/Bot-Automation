@@ -72,9 +72,9 @@ export default function ContactSelectModal({
 
 
         <div className="flex justify-end space-x-2">
-          <button className="btn btn-secondary" id="btn-select-contact" onClick={onClose}>
+          {/* <button className="btn btn-secondary" id="btn-select-contact" onClick={onClose}>
             Cancelar
-          </button>
+          </button> */}
           <button className="btn btn-primary" id="btn-select-contact" onClick={() => onConfirm(tempSelected)}>
             Confirmar
           </button>
