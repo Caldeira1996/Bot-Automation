@@ -1,4 +1,4 @@
-import { FiUserPlus, FiUsers, FiSettings, FiHome, FiAtSign, FiLogOut } from "react-icons/fi";
+import { FiUserPlus, FiSettings, FiLogOut, FiEye } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 import "../styles/sidebar.css"
@@ -16,7 +16,7 @@ export default function Sidebar({ onAddContact, onViewContacts }: SidebarProps) 
         <FiUserPlus />
       </button>
       <button title="Ver Contatos" onClick={onViewContacts}>
-        <FiUsers />
+        <FiEye />
       </button>
       <button title="Configurações" onClick={() => navigate("/settings")}>
         <FiSettings />

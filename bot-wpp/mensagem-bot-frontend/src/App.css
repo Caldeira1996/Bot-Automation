@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+.container {
+  position: relative;
+}
+
 .logo {
   height: 6em;
   padding: 1.5em;
@@ -39,4 +43,68 @@
 
 .read-the-docs {
   color: #888;
+}
+
+.icon-tab-bar-vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-left: auto;
+  margin-top: 1rem;
+  width: fit-content;
+}
+
+
+.icon-tab-bar-vertical button {
+  font-size: 1.8rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  padding: 0.4rem;
+  border-radius: 8px;
+  color: #333;
+}
+
+.icon-tab-bar-vertical button:hover {
+  background-color: #f0f0f0;
+}
+
+.icon-tab-bar-vertical button.active {
+  background-color: #2d7a2d;
+  color: white;
+}
+
+.icon-tab-bar-floating {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.icon-tab-bar-floating button {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+}
+
+.icon-tab-bar-floating button:hover {
+  background-color: #e8e8e8;
+}
+
+.icon-tab-bar-floating button.active {
+  background-color: #2d7a2d;
+  color: white;
 }

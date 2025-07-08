@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import type { Contact } from "../types";
 import mammoth from "mammoth";
@@ -11,6 +11,9 @@ interface MessageEditorProps {
   template: string;
   setTemplate: Dispatch<SetStateAction<string>>;
   contacts: Contact[];
+
+  activeTab: "manual" | "contatos";
+  setActiveTab: React.Dispatch<React.SetStateAction<"manual" | "contatos">>;
 }
 
 export default function MessageEditor({
