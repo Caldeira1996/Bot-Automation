@@ -1,5 +1,7 @@
-import { FiUserPlus, FiUsers, FiSettings } from "react-icons/fi";
+import { FiUserPlus, FiUsers, FiSettings, FiHome, FiAtSign, FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+
+import "../styles/sidebar.css"
 
 interface SidebarProps {
   onAddContact: () => void;
@@ -18,6 +20,9 @@ export default function Sidebar({ onAddContact, onViewContacts }: SidebarProps) 
       </button>
       <button title="Configurações" onClick={() => navigate("/settings")}>
         <FiSettings />
+      </button>
+      <button title="Sair" onClick={() => navigate("/Home")}>
+        <FiLogOut />
       </button>
     </div>
   );

@@ -1,25 +1,27 @@
 .sidebar {
-  position: fixed;
-  right: 1rem;
-  top: 8rem;
+  position: fixed;      /* fixa na tela */
+  top: 0;               /* no topo */
+  right: 0;             /* na lateral direita */
+  height: 100vh;        /* altura total da tela */
+  width: 60px;          /* largura fixa, pode ajustar */
+  background-color: #f0f0f0;  /* cor de fundo para visualizar */
   display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  z-index: 999;
+  flex-direction: column; /* vertical */
+  align-items: center;     /* centraliza ícones horizontalmente */
+  padding: 1rem 0;         /* espaçamento em cima e embaixo */
+  box-shadow: -2px 0 5px rgba(0,0,0,0.1); /* sombra suave para destacar */
+  z-index: 1000;           /* fica acima de outras coisas */
+  gap: 1rem;               /* espaçamento entre botões */
 }
-
 .sidebar button {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
+  background: none;
   border: none;
-  background-color: #2d7a2d;
-  color: white;
-  font-size: 1.3rem;
   cursor: pointer;
-  transition: background-color 0.2s ease;
+  font-size: 1.5rem; /* aumenta o tamanho dos ícones */
+  color: #333;
+  transition: color 0.2s ease;
 }
 
 .sidebar button:hover {
-  background-color: #245d24;
+  color: #28a745; /* cor verde ao passar o mouse */
 }
