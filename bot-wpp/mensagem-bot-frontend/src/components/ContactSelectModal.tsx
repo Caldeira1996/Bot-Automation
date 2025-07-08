@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
 import type { Contact } from "../types";
 
+import "../styles/Contact-Select-Modal.css"
+
 interface ContactSelectModalProps {
   contacts: Contact[];
   selected: string[]; // números selecionados

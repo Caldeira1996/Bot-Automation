@@ -1,0 +1,171 @@
+.modal-backdrop {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(13, 27, 42, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  box-sizing: border-box;
+  z-index: 1000;
+}
+
+.modal {
+  background-color: var(--color-panel);
+  padding: 2.5rem 3rem;
+  border-radius: 20px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 15px 30px rgba(0,0,0,0.45);
+  position: relative;
+  color: #222;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.modal h2 {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--color-accent);
+  margin: 0;
+  text-align: center;
+  user-select: none;
+  text-transform: uppercase;
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  font-size: 2.2rem;
+  color: #666;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s ease, transform 0.2s ease;
+  user-select: none;
+  padding: 0;
+  line-height: 1;
+}
+.modal-close-btn:hover {
+  color: var(--color-accent);
+  transform: rotate(90deg);
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  border: 1.8px solid #ccc;
+  outline-offset: 3px;
+  outline-color: var(--color-accent);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  font-family: inherit;
+  color: #222;
+  user-select: text;
+}
+.input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 8px var(--color-accent);
+}
+
+.max-h-64 {
+  max-height: 16rem; /* 64 * 0.25rem = 16rem */
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  user-select: none;
+}
+
+label input[type="checkbox"] {
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+}
+
+p {
+  font-size: 1rem;
+  color: #555;
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+.space-x-2 > :not([hidden]) ~ :not([hidden]) {
+  margin-left: 0.5rem;
+}
+
+/* Botões */
+.btn {
+  padding: 0.85rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  border: none;
+  user-select: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-primary {
+  background-color: var(--color-accent);
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #135e4f;
+  transform: scale(1.05);
+}
+
+.btn-secondary {
+  background-color: #324b63;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #2a3e53;
+  transform: scale(1.05);
+}
+
+/* Responsivo */
+@media (max-width: 600px) {
+  .modal {
+    padding: 2rem;
+    max-width: 95vw;
+  }
+
+  .modal h2 {
+    font-size: 1.4rem;
+  }
+
+  .btn {
+    font-size: 1rem;
+    padding: 0.7rem 1.2rem;
+  }
+
+  label {
+    font-size: 0.9rem;
+  }
+
+  .input {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+  }
+}
