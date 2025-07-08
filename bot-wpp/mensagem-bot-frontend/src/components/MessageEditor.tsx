@@ -1,45 +1,59 @@
-import { useState } from "react";
-import type { Dispatch, SetStateAction } from "react";
-import type { Contact } from "../types";
+import {
+  useState,
+  useImperativeHandle,
+  forwardRef,
+  useRef,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import mammoth from "mammoth";
 import * as XLSX from "xlsx";
-
 import ContactSelectModal from "./ContactSelectModal";
+import type { Contact } from "../types";
 import "../styles/message-editor.css";
 
 interface MessageEditorProps {
   template: string;
   setTemplate: Dispatch<SetStateAction<string>>;
   contacts: Contact[];
-
   activeTab: "manual" | "contatos";
-  setActiveTab: React.Dispatch<React.SetStateAction<"manual" | "contatos">>;
+  setActiveTab: Dispatch<SetStateAction<"manual" | "contatos">>;
+  showSelectModal: boolean;
+  setShowSelectModal: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function MessageEditor({
-  template,
-  setTemplate,
-  contacts,
-}: MessageEditorProps) {
+export type MessageEditorRef = {
+  triggerFileInput: () => void;
+};
+
+const MessageEditor = forwardRef<MessageEditorRef, MessageEditorProps>(function MessageEditor(
+  { template, setTemplate, contacts, activeTab, setActiveTab, showSelectModal, setShowSelectModal },
+  ref
+) {
   const [manualPhones, setManualPhones] = useState("");
   const [selectedPhones, setSelectedPhones] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<"manual" | "contatos">("manual");
   const [sending, setSending] = useState(false);
-  const [showSelectModal, setShowSelectModal] = useState(false);
 
-  // Novo: juntar manual + contatos
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    triggerFileInput: () => {
+      fileInputRef.current?.click();
+    },
+    openSelectModal: () => {
+      setShowSelectModal(true);
+    }
+  }));
+
   const manualList = manualPhones
     .split(",")
     .map((p) => p.trim())
     .filter((p) => p.length > 0);
 
   const mergedPhones = Array.from(new Set([...manualList, ...selectedPhones]));
-
   const validPhones = mergedPhones.filter((p) => /^\d{12,13}$/.test(p));
   const invalidPhones = mergedPhones.filter((p) => !/^\d{12,13}$/.test(p));
-
-  const allPhonesValid = mergedPhones.length > 0 && invalidPhones.length === 0;
-  const phoneIsValid = mergedPhones.length > 0 && allPhonesValid;
+  const phoneIsValid = mergedPhones.length > 0 && invalidPhones.length === 0;
   const msgIsValid = template.trim().length > 0;
 
   async function handleSubmit(e: React.FormEvent) {
@@ -142,11 +156,11 @@ export default function MessageEditor({
             type="file"
             accept=".xlsx,.xls,.docx"
             onChange={handleFile}
+            ref={fileInputRef}
             style={{ display: "none" }}
           />
-        </div>
+        </div> 
 
-        {/* Contador e balões */}
         {mergedPhones.length > 0 && (
           <div className="import-summary">
             <div className="import-counts">
@@ -181,11 +195,10 @@ export default function MessageEditor({
           </div>
         )}
 
-        {/* Campo de entrada e mensagem */}
         {activeTab === "manual" && (
           <input
             className="input w-full"
-            placeholder="Digite um Número: (EX:Números: 55DDDX-XXXX-XXXX,55DDDX-XXXX-XXXX)"
+            placeholder="Digite um Número: (EX: 55DDDXXXXXXXXX)"
             value={manualPhones}
             onChange={(e) => {
               const onlyDigitsAndComma = e.target.value.replace(/[^\d,]/g, "");
@@ -202,11 +215,7 @@ export default function MessageEditor({
           onChange={(e) => setTemplate(e.target.value)}
         />
 
-        <button
-          className="btn"
-          disabled={!phoneIsValid || !msgIsValid || sending}
-          onClick={handleSubmit}
-        >
+        <button className="btn" disabled={!phoneIsValid || !msgIsValid || sending} onClick={handleSubmit}>
           {sending ? "Enviando…" : "Enviar Mensagem"}
         </button>
       </section>
@@ -224,4 +233,6 @@ export default function MessageEditor({
       )}
     </>
   );
-}
+});
+
+export default MessageEditor;

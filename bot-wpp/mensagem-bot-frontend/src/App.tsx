@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import type { Contact } from "./types";
-import MessageEditor from "./components/MessageEditor";
+import MessageEditor, { type MessageEditorRef } from "./components/MessageEditor";
 import ContactAddModal from "./components/ContactAddModal";
 import ContactListModal from "./components/ContactListModal";
 import ScheduleForm from "./components/ScheduleForm";
@@ -15,8 +15,9 @@ export default function App() {
   const [addOpen, setAddOpen] = useState(false);
   const [listOpen, setListOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"manual" | "contatos">("manual");
+  const [showSelectModal, setShowSelectModal] = useState(false);
 
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const messageEditorRef = useRef<MessageEditorRef>(null);
 
   useEffect(() => {
     const salvos = localStorage.getItem("contatos");
@@ -38,10 +39,6 @@ export default function App() {
     setContacts((prev) => prev.filter((_, i) => i !== indexToRemove));
   const handleClearAll = () => setContacts([]);
 
-  const handleFileClick = () => {
-    fileInputRef.current?.click();
-  };
-
   return (
     <>
       <main className="container" style={{ position: "relative" }}>
@@ -56,20 +53,18 @@ export default function App() {
           </button>
           <button
             title="Selecionar Contatos"
-            onClick={() => setActiveTab("contatos")}
+            onClick={() => setShowSelectModal(true)}
             className={activeTab === "contatos" ? "active" : ""}
           >
             <FiUsers />
           </button>
-          <button title="Importar Excel" onClick={handleFileClick}>
+
+          <button
+            title="Importar Excel"
+            onClick={() => messageEditorRef.current?.triggerFileInput()}
+          >
             <FiFileText />
           </button>
-          <input
-            type="file"
-            accept=".xlsx,.xls,.docx"
-            ref={fileInputRef}
-            style={{ display: "none" }}
-          />
         </div>
 
         <h1>Bot de Mensagens</h1>
@@ -88,11 +83,14 @@ export default function App() {
         )}
 
         <MessageEditor
+          ref={messageEditorRef}
           template={template}
           setTemplate={setTemplate}
           contacts={contacts}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          showSelectModal={showSelectModal}
+          setShowSelectModal={setShowSelectModal}
         />
 
         <ScheduleForm onSchedule={(s) => console.log("Agendar", s)} />
