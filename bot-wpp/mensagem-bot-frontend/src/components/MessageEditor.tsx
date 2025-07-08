@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import type { Contact } from "../types";
 import mammoth from "mammoth";
@@ -24,19 +24,19 @@ export default function MessageEditor({
   const [sending, setSending] = useState(false);
   const [showSelectModal, setShowSelectModal] = useState(false);
 
-  // NOVOS estados para contar válidos e inválidos
-  const [countValid, setCountValid] = useState(0);
-  const [countInvalid, setCountInvalid] = useState(0);
-
+  // Novo: juntar manual + contatos
   const manualList = manualPhones
     .split(",")
     .map((p) => p.trim())
     .filter((p) => p.length > 0);
 
-  const allPhones = activeTab === "manual" ? manualList : selectedPhones;
+  const mergedPhones = Array.from(new Set([...manualList, ...selectedPhones]));
 
-  const allPhonesValid = allPhones.every((p) => /^\d{12,13}$/.test(p));
-  const phoneIsValid = allPhones.length > 0 && allPhonesValid;
+  const validPhones = mergedPhones.filter((p) => /^\d{12,13}$/.test(p));
+  const invalidPhones = mergedPhones.filter((p) => !/^\d{12,13}$/.test(p));
+
+  const allPhonesValid = mergedPhones.length > 0 && invalidPhones.length === 0;
+  const phoneIsValid = mergedPhones.length > 0 && allPhonesValid;
   const msgIsValid = template.trim().length > 0;
 
   async function handleSubmit(e: React.FormEvent) {
@@ -49,7 +49,7 @@ export default function MessageEditor({
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          numbers: allPhones,
+          numbers: mergedPhones,
           message: template,
         }),
       });
@@ -60,8 +60,6 @@ export default function MessageEditor({
         setTemplate("");
         setManualPhones("");
         setSelectedPhones([]);
-        setCountValid(0);
-        setCountInvalid(0);
       } else {
         alert("❌ Erro: " + (data.error || "Falha ao enviar"));
       }
@@ -94,11 +92,6 @@ export default function MessageEditor({
           .map((n) => n.toString().replace(/[^\d]/g, ""));
 
         setManualPhones(numeros.join(","));
-
-        const validNumbers = numeros.filter((n) => /^\d{12,13}$/.test(n));
-        const invalidNumbers = numeros.filter((n) => !/^\d{12,13}$/.test(n));
-        setCountValid(validNumbers.length);
-        setCountInvalid(invalidNumbers.length);
       };
       reader.readAsArrayBuffer(file);
     } else if (isDocx) {
@@ -108,15 +101,8 @@ export default function MessageEditor({
         const result = await mammoth.extractRawText({ arrayBuffer });
         const text = result.value;
 
-        const numeros =
-          text.match(/\d{12,13}/g)?.map((n) => n.trim()) || [];
-
+        const numeros = text.match(/\d{12,13}/g)?.map((n) => n.trim()) || [];
         setManualPhones(numeros.join(","));
-
-        const validNumbers = numeros.filter((n) => /^\d{12,13}$/.test(n));
-        const invalidNumbers = numeros.filter((n) => !/^\d{12,13}$/.test(n));
-        setCountValid(validNumbers.length);
-        setCountInvalid(invalidNumbers.length);
       };
       reader.readAsArrayBuffer(file);
     } else {
@@ -131,15 +117,13 @@ export default function MessageEditor({
 
         <div className="flex space-x-2">
           <button
-            className={`btn ${activeTab === "manual" ? "bg-green-700 text-white" : "bg-gray-200"
-              }`}
+            className={`btn ${activeTab === "manual" ? "bg-green-700 text-white" : "bg-gray-200"}`}
             onClick={() => setActiveTab("manual")}
           >
             Inserir manualmente
           </button>
           <button
-            className={`btn ${activeTab === "contatos" ? "bg-green-700 text-white" : "bg-gray-200"
-              }`}
+            className={`btn ${activeTab === "contatos" ? "bg-green-700 text-white" : "bg-gray-200"}`}
             onClick={() => setShowSelectModal(true)}
           >
             Selecionar contatos
@@ -147,11 +131,7 @@ export default function MessageEditor({
         </div>
 
         <div className="input-excel">
-          <label
-            htmlFor="upload-excel"
-            className="btn btn-secondary"
-            style={{ cursor: "pointer" }}
-          >
+          <label htmlFor="upload-excel" className="btn btn-secondary" style={{ cursor: "pointer" }}>
             Importar Excel (.xls, .xlsx)
           </label>
           <input
@@ -163,56 +143,19 @@ export default function MessageEditor({
           />
         </div>
 
-        {/* Feedback dos números válidos/ inválidos */}
-        <div style={{ display: "flex", gap: "1rem", alignItems: "center", marginTop: "0.5rem" }}>
-          <span style={{ color: "green", fontWeight: "bold" }}>{countValid} OK</span>
-          <span style={{ color: "red", fontWeight: "bold" }}>{countInvalid} X</span>
-        </div>
-
-        {activeTab === "manual" ? (
-          <input
-            className="input w-full"
-            placeholder="Números: 55DDDXXXXXXXXX,55DDDXXXXXXXXX"
-            value={manualPhones}
-            onChange={(e) => {
-              const onlyDigitsAndComma = e.target.value.replace(/[^\d,]/g, "");
-              setManualPhones(onlyDigitsAndComma);
-            }}
-          />
-        ) : (
-          <p>Clique no botão "Selecionar contatos" para escolher os contatos.</p>
-        )}
-
-        <textarea
-          className="input w-full"
-          rows={6}
-          placeholder="Digite a mensagem..."
-          value={template}
-          onChange={(e) => setTemplate(e.target.value)}
-        />
-
-        {activeTab === "manual" && manualList.length > 0 && (
-          <div className="space-y-1">
-            <p className="text-sm font-medium">
-              Números importados:{" "}
-              <span className="text-green-700">
-                {manualList.filter((p) => /^\d{12,13}$/.test(p)).length}
-              </span>{" "}
-              válidos /{" "}
-              <span className="text-red-700">
-                {manualList.filter((p) => !/^\d{12,13}$/.test(p)).length}
-              </span>{" "}
-              inválidos
-            </p>
+        {/* Contador e balões */}
+        {mergedPhones.length > 0 && (
+          <div className="import-summary">
+            <div className="import-counts">
+              <span className="count-ok">{validPhones.length} OK</span>
+              <span className="count-error">{invalidPhones.length} X</span>
+            </div>
 
             <div className="phone-bubbles-container">
-              {manualList.map((num, index) => {
+              {mergedPhones.map((num, index) => {
                 const isValid = /^\d{12,13}$/.test(num);
                 return (
-                  <span
-                    key={index}
-                    className={`phone-bubble ${isValid ? "valid" : "invalid"}`}
-                  >
+                  <span key={index} className={`phone-bubble ${isValid ? "valid" : "invalid"}`}>
                     {num}
                     <span className={`icon-circle ${isValid ? "icon-valid" : "icon-invalid"}`}>
                       {isValid ? "✓" : "✗"}
@@ -220,11 +163,11 @@ export default function MessageEditor({
                     <button
                       className={`remove-btn ${isValid ? "valid" : "invalid"}`}
                       onClick={() => {
-                        const updated = [...manualList];
-                        updated.splice(index, 1);
-                        setManualPhones(updated.join(","));
+                        const updatedManual = manualList.filter((p) => p !== num);
+                        const updatedSelected = selectedPhones.filter((p) => p !== num);
+                        setManualPhones(updatedManual.join(","));
+                        setSelectedPhones(updatedSelected);
                       }}
-                      aria-label="Remover número"
                     >
                       ×
                     </button>
@@ -235,6 +178,26 @@ export default function MessageEditor({
           </div>
         )}
 
+        {/* Campo de entrada e mensagem */}
+        {activeTab === "manual" && (
+          <input
+            className="input w-full"
+            placeholder="Digite um Número: (EX:Números: 55DDDX-XXXX-XXXX,55DDDX-XXXX-XXXX)"
+            value={manualPhones}
+            onChange={(e) => {
+              const onlyDigitsAndComma = e.target.value.replace(/[^\d,]/g, "");
+              setManualPhones(onlyDigitsAndComma);
+            }}
+          />
+        )}
+
+        <textarea
+          className="input w-full"
+          rows={6}
+          placeholder="Digite a mensagem..."
+          value={template}
+          onChange={(e) => setTemplate(e.target.value)}
+        />
 
         <button
           className="btn"

@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
 import type { Contact } from "./types";
-import { Link } from "react-router-dom";
-
+import MessageEditor from "./components/MessageEditor";
 import ContactAddModal from "./components/ContactAddModal";
 import ContactListModal from "./components/ContactListModal";
-import MessageEditor from "./components/MessageEditor";
 import ScheduleForm from "./components/ScheduleForm";
+import Sidebar from "./components/Sidebar"; // <-- ✅ IMPORTADO
 
 export default function App() {
   const [contacts, setContacts] = useState<Contact[]>([]);
@@ -34,43 +33,36 @@ export default function App() {
   const handleClearAll = () => setContacts([]);
 
   return (
-    <main className="container">
-      <h1>Bot de Mensagens</h1>
+    <>
+      <main className="container">
+        <h1>Bot de Mensagens</h1>
 
-      <Link to="/settings" className="text-sm underline">
-        Configurações
-      </Link>
+        {listOpen && (
+          <ContactListModal
+            contacts={contacts}
+            onClose={() => setListOpen(false)}
+            onRemove={handleRemove}
+            onClearAll={handleClearAll}
+          />
+        )}
 
-      <div className="button-group">
-        <button className="btn" onClick={() => setAddOpen(true)}>
-          Adicionar Contatos
-        </button>
+        {addOpen && (
+          <ContactAddModal onClose={() => setAddOpen(false)} onAdd={handleAdd} />
+        )}
 
-        <button className="btn" onClick={() => setListOpen(true)}>
-          Ver Contatos ({contacts.length})
-        </button>
-      </div>
-
-      {listOpen && (
-        <ContactListModal
+        <MessageEditor
+          template={template}
+          setTemplate={setTemplate}
           contacts={contacts}
-          onClose={() => setListOpen(false)}
-          onRemove={handleRemove}
-          onClearAll={handleClearAll}
         />
-      )}
 
-      {addOpen && (
-        <ContactAddModal onClose={() => setAddOpen(false)} onAdd={handleAdd} />
-      )}
+        <ScheduleForm onSchedule={(s) => console.log("Agendar", s)} />
+      </main>
 
-      <MessageEditor
-        template={template}
-        setTemplate={setTemplate}
-        contacts={contacts}
+      <Sidebar
+        onAddContact={() => setAddOpen(true)}
+        onViewContacts={() => setListOpen(true)}
       />
-
-      <ScheduleForm onSchedule={(s) => console.log("Agendar", s)} />
-    </main>
+    </>
   );
 }
