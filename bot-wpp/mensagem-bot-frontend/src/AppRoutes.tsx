@@ -12,7 +12,7 @@ export default function AppRoutes() {
 
       {/* 2. adicione a rota explícita */}
       <Route path="/settings" element={<Settings />} />
-      <Route path="/CheckoutScreen" element={<CheckoutScreen/>}/>
+      <Route path="/checkout" element={<CheckoutScreen />} />
 
       {/* rota coringa deve vir por último */}
       <Route path="*" element={<Navigate to="/" replace />} />
