@@ -16,9 +16,7 @@ if (!secretKey) {
 }
 
 // ✅ Instância segura da Stripe
-const stripe = new Stripe(secretKey, {
-  apiVersion: '2025-06-30.basil', // novo valor aceito
-});
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-06-30.basil' });
 
 // ✅ Endpoint do checkout
 app.post('/create-checkout-session', async (_req, res) => {
@@ -28,9 +26,13 @@ app.post('/create-checkout-session', async (_req, res) => {
       payment_method_types: ['card'],
       line_items: [
         {
-          price: 'price_12345', // ✅ Coloque seu price_id aqui
+          price: 'price_1Rj4AsHJCubfDy0QPcEkL3RC', // ✅ Coloque seu price_id aqui
           quantity: 1,
         },
+        {
+          price: 'price_1Rj499HJCubfDy0QOpZvCF3F',
+          quantity: 1,
+        }
       ],
       success_url: 'http://localhost:5173/sucesso',
       cancel_url: 'http://localhost:5173/cancelado',
