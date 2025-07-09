@@ -1,7 +1,9 @@
 import { FiUserPlus, FiSettings, FiLogOut, FiEye, FiClock, FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
+import { startCheckout } from "./Checkout/StartCheckout";
 
 import "../styles/sidebar.css"
+
 
 interface SidebarProps {
   onAddContact: () => void;
@@ -23,7 +25,7 @@ export default function Sidebar({ onAddContact, onViewContacts, onOpenSchedule }
       <button title="Agendamentos de envio" onClick={onOpenSchedule}>
         <FiClock />
       </button>
-      <button title="Ir para Checkout" onClick={() => navigate("/checkout")}>
+      <button title="Assinar Plano Premium" onClick={startCheckout}>
         <FiShoppingCart />
       </button>
       <button title="Configurações" onClick={() => navigate("/settings")}>

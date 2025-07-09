@@ -1,5 +1,9 @@
 import { useState } from 'react';
+
+import { loadStripe } from '@stripe/stripe-js';
 import './CheckoutScreen.css'; 
+
+const stripePromise = loadStripe('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'); // use sua public key (começa com pk_test_)
 
 export default function CheckoutScreen() {
   const [paymentMethod, setPaymentMethod] = useState<'credit' | 'pix' | 'boleto'>('credit');
@@ -10,9 +14,20 @@ export default function CheckoutScreen() {
     cvv: '',
   });
 
-  const handlePayment = () => {
-    alert('Assinatura confirmada! 🚀');
-  };
+  async function handlePayment() {
+  const response = await fetch('http://localhost:3001/create-checkout-session', {
+    method: 'POST',
+  });
+
+   const data = await response.json();
+
+  const stripe = await stripePromise;
+  if (stripe && data.url) {
+    window.location.href = data.url; // redireciona pro checkout do Stripe
+  } else {
+    alert('Erro ao redirecionar para o Stripe!');
+  }
+}
 
   return (
     <div className="container">
