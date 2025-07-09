@@ -1,4 +1,4 @@
-import { FiUserPlus, FiSettings, FiLogOut, FiEye, FiClock } from "react-icons/fi";
+import { FiUserPlus, FiSettings, FiLogOut, FiEye, FiClock, FiShoppingCart } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 
 import "../styles/sidebar.css"
@@ -22,6 +22,9 @@ export default function Sidebar({ onAddContact, onViewContacts, onOpenSchedule }
       </button>
       <button title="Agendamentos de envio" onClick={onOpenSchedule}>
         <FiClock />
+      </button>
+      <button title="Ir para Checkout" onClick={() => navigate("/checkout")}>
+        <FiShoppingCart />
       </button>
       <button title="Configurações" onClick={() => navigate("/settings")}>
         <FiSettings />
