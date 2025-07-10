@@ -4,6 +4,8 @@ import { create, Whatsapp } from 'venom-bot';
 import Stripe from 'stripe';
 import dotenv from 'dotenv';
 
+import { authRouter } from './auth-api';
+
 dotenv.config();
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -13,6 +15,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 const app = express();
 app.use(cors());
 app.use(express.json());
+app.use('/', authRouter);
 
 /* ---------- Variáveis globais do Venom Bot ---------- */
 let client: Whatsapp | null = null;
@@ -32,14 +35,20 @@ app.post('/create-checkout-session', async (_req, res) => {
       mode: 'subscription',
       payment_method_types: ['card'],
       line_items: [
-          {
-          price: 'price_1Rj4AsHJCubfDy0QPcEkL3RC', // ✅ Coloque seu price_id aqui
-          quantity: 1,
-        },
+        //   {
+        //   price: 'price_1Rj4AsHJCubfDy0QPcEkL3RC', // ✅ Coloque seu price_id aqui
+        //   quantity: 1,
+        // },
+        // {
+        //   price: 'price_1Rj499HJCubfDy0QOpZvCF3F',
+        //   quantity: 1,
+        // }
+
         {
-          price: 'price_1Rj499HJCubfDy0QOpZvCF3F',
+          price: 'price_1Rj7iFHJCubfDy0Qb6tp5wCJ',
           quantity: 1,
         }
+
       ],
       success_url: 'http://localhost:5173/sucesso',
       cancel_url: 'http://localhost:5173/cancelado',
